@@ -1,16 +1,18 @@
-                          bitlib release 19
+                          bitlib release 20
                           -----------------
 
-                   by Reuben Thomas (rrt@sc3d.org)
+                   by Reuben Thomas <rrt@sc3d.org>
+                 http://luaforge.net/projects/bitlib
 
 
-bitlib is a C library for Lua 5.x that provides bitwise operations.
-It is copyright Reuben Thomas 2000-2006, and is released under the
-MIT license, like Lua (see http://www.lua.org/copyright.html for the
-full license; it's basically the same as the BSD license). There is no
-warranty.
+bitlib is a C library for Lua 5.1 that provides bitwise operations
+(earlier releases support 5.0 and 4.0). It is copyright Reuben Thomas
+2000-2006, and is released under the MIT license, like Lua (see
+http://www.lua.org/copyright.html for the full license; it's basically
+the same as the BSD license). There is no warranty.
 
-Please report bugs and make suggestions to the email address above.
+Please report bugs and make suggestions to the email address above, or
+use the LuaForge trackers.
 
 Thanks to John Passaniti for his bitwise operations library, some of
 whose ideas I used, and to Thatcher Ulrich for portability fixes.
@@ -19,12 +21,8 @@ whose ideas I used, and to Thatcher Ulrich for portability fixes.
 Installation
 ------------
 
-The makefiles provided builds a shared library called bit.so,
-which can be used with loadlib. Use Makefile50 for Lua 5.0 and
-Makefile5.1 for Lua 5.1.
-
-The initialisation function (for use with loadlib or package.loadlib) is
-luaopen_bit.
+The provided Makefile builds a shared library called bit.so, which can
+be installed on LUA_CPATH and used with require.
 
 
 Use
