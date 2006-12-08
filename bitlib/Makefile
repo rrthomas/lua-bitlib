@@ -1,6 +1,9 @@
-# makefile for bitlib for Lua 5.1
+# makefile for bitlib
 
-CFLAGS += -W -Wall -O2 -fPIC -I/usr/include/lua5.1
+# Set Lua version (typically lua50 or lua5.1)
+LUA=lua5.1
+
+CFLAGS += -W -Wall -O2 -fPIC -I/usr/include/$(LUA)
 
 OBJS=lbitlib.o
 SRCS=lbitlib.c
@@ -14,7 +17,7 @@ all: $T
 
 # shared libraries (for Linux)
 so: $T
-	$(CC) $(CFLAGS) -o $(LIB).so.$V -shared *.o -llua5.1
+	$(CC) $(CFLAGS) -o $(LIB).so.$V -shared *.o -l$(LUA)
 	ln -s $(LIB).so.$V $(LIB).so
 
 $T: $(OBJS)
