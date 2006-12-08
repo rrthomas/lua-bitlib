@@ -1,49 +1,45 @@
 /* Bitwise operations library */
-/* Reuben Thomas   nov00-09jan04 */
+/* Reuben Thomas   nov00-08dec06 */
 
 #include "lauxlib.h"
 #include "lua.h"
 
-typedef long long Integer;
-typedef unsigned long long UInteger;
+#include <inttypes.h>
 
-#define luaL_checkbit(L, n)  ((Integer)luaL_checknumber(L, n))
-#define luaL_checkubit(L, n) ((UInteger)luaL_checkbit(L, n))
+typedef uintmax_t Integer;
+typedef intmax_t UInteger;
 
-#define TDYADIC(name, op, checkbit1, checkbit2) \
+#define TDYADIC(name, op, type1, type2) \
   static int bit_ ## name(lua_State* L) { \
     lua_pushnumber(L, \
-      checkbit1(L, 1) op checkbit2(L, 2)); \
+      (type1)luaL_checknumber(L, 1) op (type2)luaL_checknumber(L, 2)); \
     return 1; \
   }
 
-#define DYADIC(name, op) \
-  TDYADIC(name, op, luaL_checkbit, luaL_checkbit)
-
-#define MONADIC(name, op) \
+#define MONADIC(name, op, type) \
   static int bit_ ## name(lua_State* L) { \
-    lua_pushnumber(L, op luaL_checkbit(L, 1)); \
+    lua_pushnumber(L, op (type)luaL_checknumber(L, 1)); \
     return 1; \
   }
 
-#define VARIADIC(name, op) \
+#define VARIADIC(name, op, type) \
   static int bit_ ## name(lua_State *L) { \
     int n = lua_gettop(L), i; \
-    Integer w = luaL_checkbit(L, 1); \
+    Integer w = (type)luaL_checknumber(L, 1); \
     for (i = 2; i <= n; i++) \
-      w op luaL_checkbit(L, i); \
+      w op (type)luaL_checknumber(L, i); \
     lua_pushnumber(L, w); \
     return 1; \
   }
 
-MONADIC(bnot,     ~)
-VARIADIC(band,    &=)
-VARIADIC(bor,     |=)
-VARIADIC(bxor,    ^=)
-TDYADIC(lshift,  <<, luaL_checkbit, luaL_checkubit)
-TDYADIC(rshift,  >>, luaL_checkubit, luaL_checkubit)
-TDYADIC(arshift, >>, luaL_checkbit, luaL_checkubit)
-DYADIC(mod,      %)
+MONADIC(bnot,    ~,  Integer)
+VARIADIC(band,   &=, Integer)
+VARIADIC(bor,    |=, Integer)
+VARIADIC(bxor,   ^=, Integer)
+TDYADIC(lshift,  <<, Integer, UInteger)
+TDYADIC(rshift,  >>, UInteger, UInteger)
+TDYADIC(arshift, >>, Integer, UInteger)
+TDYADIC(mod,     %,  Integer, Integer)
 
 static const struct luaL_reg bitlib[] = {
   {"bnot",    bit_bnot},
