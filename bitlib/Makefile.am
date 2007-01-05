@@ -4,4 +4,4 @@ lib_LTLIBRARIES = liblua-bit.la
 
 liblua_bit_la_SOURCES = lbitlib.c
 
-all: bit.la
+all: liblua-bit.la
