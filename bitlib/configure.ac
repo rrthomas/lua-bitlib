@@ -52,10 +52,10 @@ if test "x$LUA" = x; then
 fi
 
 dnl lua_version
-AC_MSG_CHECKING([for Lua version == 5.1])
+AC_MSG_CHECKING([for Lua version >= 5.0])
 lua_version=$($LUA -v 2>&1 | head -n 1 | cut -d' ' -f2)
 case $lua_version in
-5.1*)
+5.*)
     AC_MSG_RESULT([yes (found $lua_version)])
     ;;
 *)
@@ -91,7 +91,7 @@ AC_CHECK_LIB([lua$with_lua_suffix],
              [$LUA_LIBS $lua_extra_libs])
 
 dnl liblua_version
-AC_MSG_CHECKING([for liblua version == 5.1])
+AC_MSG_CHECKING([for liblua version >= 5.0])
 save_CFLAGS="$CFLAGS"
 save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $LUA_INCLUDES"
@@ -103,7 +103,7 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 int main()
 {
     printf("(found %s, %d)... ", LUA_VERSION, LUA_VERSION_NUM);
-    if (LUA_VERSION_NUM == 501)
+    if (LUA_VERSION_NUM >= 500)
         exit(EXIT_SUCCESS);
     exit(EXIT_FAILURE);
 }
