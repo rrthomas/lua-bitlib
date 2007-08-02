@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(bitlib, 20, rrt@sc3d.org)
+AC_INIT(bitlib, 21, rrt@sc3d.org)
 AM_INIT_AUTOMAKE
 
 dnl Checks for programs.

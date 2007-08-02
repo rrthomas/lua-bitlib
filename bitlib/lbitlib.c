@@ -1,5 +1,5 @@
 /* Bitwise operations library */
-/* Reuben Thomas   nov00-08dec06 */
+/* Reuben Thomas   nov00-02aug07 */
 
 #include "lauxlib.h"
 #include "lua.h"
@@ -9,25 +9,26 @@
 typedef uintmax_t Integer;
 typedef intmax_t UInteger;
 
+#define checkUInteger(L, n) ((UInteger)luaL_checknumber((L), (n)))
+
 #define TDYADIC(name, op, type1, type2) \
   static int bit_ ## name(lua_State* L) { \
-    lua_pushnumber(L, \
-      (type1)luaL_checknumber(L, 1) op (type2)luaL_checknumber(L, 2)); \
+    lua_pushnumber(L, (type1)checkUInteger(L, 1) op (type2)checkUInteger(L, 2)); \
     return 1; \
   }
 
 #define MONADIC(name, op, type) \
   static int bit_ ## name(lua_State* L) { \
-    lua_pushnumber(L, op (type)luaL_checknumber(L, 1)); \
+    lua_pushnumber(L, op (type)checkUInteger(L, 1)); \
     return 1; \
   }
 
 #define VARIADIC(name, op, type) \
   static int bit_ ## name(lua_State *L) { \
     int n = lua_gettop(L), i; \
-    Integer w = (type)luaL_checknumber(L, 1); \
+    Integer w = (type)checkUInteger(L, 1); \
     for (i = 2; i <= n; i++) \
-      w op (type)luaL_checknumber(L, i); \
+      w op (type)checkUInteger(L, i);      \
     lua_pushnumber(L, w); \
     return 1; \
   }
