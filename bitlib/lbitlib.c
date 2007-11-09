@@ -1,10 +1,10 @@
 /* Bitwise operations library */
-/* Reuben Thomas   nov00-02aug07 */
-
-#include "lauxlib.h"
-#include "lua.h"
+/* (c) Reuben Thomas 2000-2007 */
+/* See README for license */
 
 #include <inttypes.h>
+#include <lauxlib.h>
+#include <lua.h>
 
 typedef uintmax_t Integer;
 typedef intmax_t UInteger;
