@@ -71,8 +71,10 @@ if test "x$with_lua_includes" != x; then
 elif test "x$with_lua_prefix" != x; then
     LUA_INCLUDES="-I$with_lua_prefix/include"
 fi
-CFLAGS="$CFLAGS $LUA_INCLUDES"
-AC_CHECK_HEADERS([lua.h lualib.h], [], [AC_MSG_FAILURE([*** Can't build without Lua])], [])
+CPPFLAGS="$CPPFLAGS $LUA_INCLUDES"
+AC_CHECK_HEADERS([lua.h lualib.h], [],
+                 [AC_MSG_FAILURE([*** missing headers lua.h or lualib.h.
+                  *** install the Lua dev package or check --with-lua-includes option.])], [])
 
 dnl LUA_LIBS
 if test "x$with_lua_libraries" != x; then
@@ -85,7 +87,8 @@ AC_CHECK_LIB([dl], [dlopen], [lua_extra_libs="$lua_extra_libs -ldl"], [])
 AC_CHECK_LIB([lua$with_lua_suffix],
              [lua_call],
              [LUA_LIBS="$LUA_LIBS -llua$with_lua_suffix $lua_extra_libs"],
-             [AC_MSG_FAILURE([*** Can't build without Lua])],
+             [AC_MSG_FAILURE([*** Can't find lua_call in lua$with_lua_suffix.
+                  *** Check for liblua installation or --with-lua-libraries or --with-lua-suffix options])],
              [$LUA_LIBS $lua_extra_libs])
 
 dnl liblua_version
