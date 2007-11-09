@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(bitlib, 21, rrt@sc3d.org)
+AC_INIT(bitlib, 22, rrt@sc3d.org)
 AM_INIT_AUTOMAKE
 
 dnl Checks for programs.
@@ -71,10 +71,8 @@ if test "x$with_lua_includes" != x; then
 elif test "x$with_lua_prefix" != x; then
     LUA_INCLUDES="-I$with_lua_prefix/include"
 fi
-save_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $LUA_INCLUDES"
 AC_CHECK_HEADERS([lua.h lualib.h], [], [AC_MSG_FAILURE([*** Can't build without Lua])], [])
-CFLAGS="$save_CFLAGS"
 
 dnl LUA_LIBS
 if test "x$with_lua_libraries" != x; then
@@ -92,8 +90,6 @@ AC_CHECK_LIB([lua$with_lua_suffix],
 
 dnl liblua_version
 AC_MSG_CHECKING([for liblua version >= 5.0])
-save_CFLAGS="$CFLAGS"
-save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $LUA_INCLUDES"
 LIBS="$LIBS $LUA_LIBS"
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
@@ -111,8 +107,6 @@ int main()
 ]])],
               [AC_MSG_RESULT([yes])],
               [AC_MSG_RESULT([no])])
-CFLAGS="$save_CFLAGS"
-LIBS="$save_LIBS"
 
 
 dnl Generate output files.
