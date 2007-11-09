@@ -16,3 +16,4 @@ liblua-bit.la
 libtool
 ltmain.sh
 missing
+bitlib*.tar.gz
