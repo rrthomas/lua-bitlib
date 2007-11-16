@@ -12,7 +12,7 @@ configure
 depcomp
 install-sh
 lbitlib.lo
-libbit.la
+bit.la
 libtool
 ltmain.sh
 missing

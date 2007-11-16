@@ -13,13 +13,13 @@ typedef uint32_t UInteger;
 
 #define TDYADIC(name, op, type1, type2) \
   static int bit_ ## name(lua_State* L) { \
-    lua_pushnumber(L, (type1)checkUInteger(L, 1) op (type2)checkUInteger(L, 2)); \
+    lua_pushnumber(L, (Integer)((type1)checkUInteger(L, 1) op (type2)checkUInteger(L, 2))); \
     return 1; \
   }
 
 #define MONADIC(name, op, type) \
   static int bit_ ## name(lua_State* L) { \
-    lua_pushnumber(L, op (type)checkUInteger(L, 1)); \
+    lua_pushnumber(L, (Integer)(op (type)checkUInteger(L, 1))); \
     return 1; \
   }
 
@@ -29,10 +29,11 @@ typedef uint32_t UInteger;
     Integer w = (type)checkUInteger(L, 1); \
     for (i = 2; i <= n; i++) \
       w op (type)checkUInteger(L, i);      \
-    lua_pushnumber(L, w); \
+    lua_pushnumber(L, (Integer)w);         \
     return 1; \
   }
 
+MONADIC(cast,    +,  Integer)
 MONADIC(bnot,    ~,  Integer)
 VARIADIC(band,   &=, Integer)
 VARIADIC(bor,    |=, Integer)
@@ -42,6 +43,7 @@ TDYADIC(rshift,  >>, UInteger, UInteger)
 TDYADIC(arshift, >>, Integer, UInteger)
 
 static const struct luaL_reg bitlib[] = {
+  {"cast",    bit_cast},
   {"bnot",    bit_bnot},
   {"band",    bit_band},
   {"bor",     bit_bor},
