@@ -7,8 +7,6 @@ bit_la_LDFLAGS = -module
 
 EXTRA_DIST = testbit.lua
 
-all: bit.la
-
 # FIXME: Setting of package.cpath only works because LD_LIBRARY_PATH
 # contains only a single directory in this case
 check:
