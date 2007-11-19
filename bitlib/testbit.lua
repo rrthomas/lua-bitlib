@@ -1,5 +1,12 @@
 require "bit"
-local maxbits = 32
+
+-- Calculate number of bits in a bitfield
+local maxbits = 1
+local n = 1
+while n > 0 do
+  n = bit.lshift (n, 1)
+  maxbits = maxbits + 1
+end
 
 assert (bit.band (0,0) == 0)
 assert (bit.band (0,-1) == 0)
