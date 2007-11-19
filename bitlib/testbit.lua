@@ -1,3 +1,7 @@
+-- bitlib test suite
+-- (c) Reuben Thomas and Shmuel Zeigerman 2007
+-- See README for license
+
 require "bit"
 
 -- Calculate number of bits in a bitfield
