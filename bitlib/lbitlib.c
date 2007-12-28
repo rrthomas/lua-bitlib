@@ -2,45 +2,39 @@
 /* (c) Reuben Thomas 2000-2007 */
 /* See README for license */
 
-#include <inttypes.h>
 #include <lauxlib.h>
 #include <lua.h>
 
-typedef int32_t Integer;
-typedef uint32_t UInteger;
-
-#define checkUInteger(L, n) ((UInteger)luaL_checknumber((L), (n)))
-
-#define TDYADIC(name, op, type1, type2) \
-  static int bit_ ## name(lua_State* L) { \
-    lua_pushnumber(L, (Integer)((type1)checkUInteger(L, 1) op (type2)checkUInteger(L, 2))); \
-    return 1; \
+#define TDYADIC(name, op)                                               \
+  static int bit_ ## name(lua_State *L) {                               \
+    lua_pushinteger(L, luaL_checkinteger(L, 1) op luaL_checkinteger(L, 2)); \
+    return 1;                                                           \
   }
 
-#define MONADIC(name, op, type) \
-  static int bit_ ## name(lua_State* L) { \
-    lua_pushnumber(L, (Integer)(op (type)checkUInteger(L, 1))); \
-    return 1; \
+#define MONADIC(name, op)                               \
+  static int bit_ ## name(lua_State *L) {               \
+    lua_pushinteger(L, op luaL_checkinteger(L, 1));     \
+    return 1;                                           \
   }
 
-#define VARIADIC(name, op, type) \
-  static int bit_ ## name(lua_State *L) { \
-    int n = lua_gettop(L), i; \
-    Integer w = (type)checkUInteger(L, 1); \
-    for (i = 2; i <= n; i++) \
-      w op (type)checkUInteger(L, i);      \
-    lua_pushnumber(L, (Integer)w);         \
-    return 1; \
+#define VARIADIC(name, op)                      \
+  static int bit_ ## name(lua_State *L) {       \
+    int n = lua_gettop(L), i;                   \
+    lua_Integer w = luaL_checkinteger(L, 1);    \
+    for (i = 2; i <= n; i++)                    \
+      w op luaL_checkinteger(L, i);             \
+    lua_pushinteger(L, w);                      \
+    return 1;                                   \
   }
 
-MONADIC(cast,    +,  Integer)
-MONADIC(bnot,    ~,  Integer)
-VARIADIC(band,   &=, Integer)
-VARIADIC(bor,    |=, Integer)
-VARIADIC(bxor,   ^=, Integer)
-TDYADIC(lshift,  <<, Integer, UInteger)
-TDYADIC(rshift,  >>, UInteger, UInteger)
-TDYADIC(arshift, >>, Integer, UInteger)
+MONADIC(cast,    +)
+MONADIC(bnot,    ~)
+VARIADIC(band,   &=)
+VARIADIC(bor,    |=)
+VARIADIC(bxor,   ^=)
+TDYADIC(lshift,  <<)
+TDYADIC(rshift,  >>)
+TDYADIC(arshift, >>)
 
 static const struct luaL_reg bitlib[] = {
   {"cast",    bit_cast},

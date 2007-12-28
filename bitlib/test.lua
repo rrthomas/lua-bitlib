@@ -2,6 +2,14 @@
 -- (c) Reuben Thomas and Shmuel Zeigerman 2007
 -- See README for license
 
+-- FIXME: These settings should really be in the callee, but shake
+-- doesn't support that.
+
+-- FIXME: Setting of package.cpath only works because LD_LIBRARY_PATH
+-- contains only a single directory in this case
+package.path = ""
+package.cpath = os.getenv ("LD_LIBRARY_PATH") .. "/?.so"
+
 require "bit"
 
 -- Calculate number of bits in a bitfield
@@ -11,6 +19,7 @@ while n > 0 do
   n = bit.lshift (n, 1)
   maxbits = maxbits + 1
 end
+print ("maxbits " .. maxbits)
 
 assert (bit.band (0, 0) == 0)
 assert (bit.band (0, -1) == 0)
