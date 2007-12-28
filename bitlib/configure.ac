@@ -55,15 +55,20 @@ dnl lua_version
 AC_MSG_CHECKING([for Lua version >= 5.0])
 lua_version=$($LUA -v 2>&1 | head -n 1 | cut -d' ' -f2)
 case $lua_version in
-5.*)
+5.0*)
     AC_MSG_RESULT([yes (found $lua_version)])
+    lualibdir='${libdir}/lua/50'
+    ;;
+5.1*)
+    AC_MSG_RESULT([yes (found $lua_version)])
+    lualibdir='${libdir}/lua/5.1'
     ;;
 *)
     AC_MSG_RESULT([no (found $lua_version)])
     AC_MSG_FAILURE([*** Can't build without Lua])
     ;;
 esac
-dnl
+AC_SUBST(lualibdir)
 
 dnl LUA_INCLUDES
 if test "x$with_lua_includes" != x; then
