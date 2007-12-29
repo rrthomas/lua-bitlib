@@ -8,7 +8,7 @@
 -- FIXME: Setting of package.cpath only works because LD_LIBRARY_PATH
 -- contains only a single directory in this case
 package.path = ""
-package.cpath = os.getenv ("LD_LIBRARY_PATH") .. "/?.so"
+package.cpath = (os.getenv ("LD_LIBRARY_PATH") or ".") .. "/?.so"
 
 require "bit"
 
