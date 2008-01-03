@@ -1,12 +1,12 @@
-                          bitlib release 25
-                          -----------------
+                                bitlib
+                                ------
 
                    by Reuben Thomas <rrt@sc3d.org>
                  http://luaforge.net/projects/bitlib
 
 
-bitlib is a C library for Lua 5.x that provides bitwise operations. It
-is copyright Reuben Thomas 2000-2007, and is released under the MIT
+bitlib is a C library for Lua 5.1 that provides bitwise operations. It
+is copyright Reuben Thomas 2000-2008, and is released under the MIT
 license, like Lua (see http://www.lua.org/copyright.html; it's
 basically the same as the BSD license). There is no warranty.
 
@@ -58,7 +58,8 @@ bit.lshift(a, b)   returns a shifted left b places
 bit.rshift(a, b)   returns a shifted logically right b places
 bit.arshift(a, b)  returns a shifted arithmetically right b places
 
-All function arguments should be integers of type lua_Integer.
+All function arguments should be integers that fit into the C type
+lua_Integer.
 
 The logical operations start with "b" for "bit" to avoid clashing with
 reserved words; although "xor" isn't a reserved word, it seemed better
