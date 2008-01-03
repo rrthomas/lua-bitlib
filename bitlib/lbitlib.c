@@ -1,28 +1,52 @@
 /* Bitwise operations library */
-/* (c) Reuben Thomas 2000-2007 */
+/* (c) Reuben Thomas 2000-2008 */
 /* See README for license */
 
-#include <lauxlib.h>
-#include <lua.h>
+#include "config.h"
 
-#define TDYADIC(name, op)                                               \
-  static int bit_ ## name(lua_State *L) {                               \
-    lua_pushinteger(L, luaL_checkinteger(L, 1) op luaL_checkinteger(L, 2)); \
-    return 1;                                                           \
+#include <lua.h>
+#include <lauxlib.h>
+
+/* FIXME: Should really use limits of lua_Integer (currently not given
+   by Lua); the code below assumes that lua_Integer is ptrdiff_t, that
+   size_t is the same as unsigned ptrdiff_t, and that lua_Number is
+   floating-point and fits in a double (use of fmod). */
+#ifdef BUILTIN_CAST
+#define TOINTEGER(L, n, f)                      \
+  ((void)(f),                                   \
+   luaL_checkinteger((L), (n)))
+#else
+#include <stdint.h>
+#include <math.h>
+
+#define TOINTEGER(L, n, f)                                              \
+  ((ptrdiff_t)(((f) = fmod(luaL_checknumber((L), (n)), (double)SIZE_MAX)), \
+               (f) > PTRDIFF_MAX ? ((f) -= SIZE_MAX + 1) :              \
+               ((f) < PTRDIFF_MIN ? ((f) += SIZE_MAX + 1) : (f))))
+#endif
+
+#define TDYADIC(name, op)                                 \
+  static int bit_ ## name(lua_State *L) {                 \
+    lua_Number f;                                         \
+    lua_Integer w = TOINTEGER(L, 1, f);                   \
+    lua_pushinteger(L, w op TOINTEGER(L, 2, f));          \
+    return 1;                                             \
   }
 
-#define MONADIC(name, op)                               \
-  static int bit_ ## name(lua_State *L) {               \
-    lua_pushinteger(L, op luaL_checkinteger(L, 1));     \
-    return 1;                                           \
+#define MONADIC(name, op)                                 \
+  static int bit_ ## name(lua_State *L) {                 \
+    lua_Number f;                                         \
+    lua_pushinteger(L, op TOINTEGER(L, 1, f));            \
+    return 1;                                             \
   }
 
 #define VARIADIC(name, op)                      \
   static int bit_ ## name(lua_State *L) {       \
+    lua_Number f;                               \
     int n = lua_gettop(L), i;                   \
-    lua_Integer w = luaL_checkinteger(L, 1);    \
+    lua_Integer w = TOINTEGER(L, 1, f);         \
     for (i = 2; i <= n; i++)                    \
-      w op luaL_checkinteger(L, i);             \
+      w op TOINTEGER(L, i, f);                  \
     lua_pushinteger(L, w);                      \
     return 1;                                   \
   }

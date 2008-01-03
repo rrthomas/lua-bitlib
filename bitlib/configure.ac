@@ -1,40 +1,48 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(bitlib, 24, rrt@sc3d.org)
+AC_INIT(bitlib, 25, rrt@sc3d.org)
 AM_INIT_AUTOMAKE
 
-dnl Checks for programs.
+dnl Check for programs
 AC_PROG_CC
 AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
+
+dnl create a config.h file (Automake will add -DHAVE_CONFIG_H)
+AM_CONFIG_HEADER(config.h)
 
 dnl Extra CFLAGS if we have gcc
 if test "$GCC" = yes; then
     CFLAGS="$CFLAGS -Wall -W -Wmissing-prototypes -Wstrict-prototypes -pedantic"
 fi
 
-dnl Checks for header files.
+dnl Check for header files
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h unistd.h byteswap.h)
 
-dnl LUA, LUA_INCLUDES, LUA_LIBS
+dnl Whether to use builtin float to int cast (OK e.g. on i386)
+AC_SUBST(BUILTIN_CAST)
+AC_ARG_WITH([builtin-cast],
+            [AS_HELP_STRING([--with-builtin-cast],
+                            [Use Lua's built-in cast from float to integer])])
+if test "$with_builtin_cast" = yes; then
+   AC_DEFINE(BUILTIN_CAST, 1, [Define to 1 to use Lua's built-in float to integer cast.])
+fi
 
-dnl Arguments
+dnl Lua location hints
 AC_ARG_WITH([lua-prefix],
-            [AC_HELP_STRING([--with-lua-prefix=DIR],
+            [AS_HELP_STRING([--with-lua-prefix=DIR],
                             [Lua files are in DIR])])
 AC_ARG_WITH([lua-includes],
-            [AC_HELP_STRING([--with-lua-includes=DIR],
+            [AS_HELP_STRING([--with-lua-includes=DIR],
                             [Lua include files are in DIR])])
 AC_ARG_WITH([lua-libraries],
-            [AC_HELP_STRING([--with-lua-libraries=DIR],
+            [AS_HELP_STRING([--with-lua-libraries=DIR],
                             [Lua library files are in DIR])])
 AC_ARG_WITH([lua-suffix],
-            [AC_HELP_STRING([--with-lua-suffix=ARG],
+            [AS_HELP_STRING([--with-lua-suffix=ARG],
                             [Lua binary and library files are suffixed with
                              ARG])])
-
-dnl Find Lua
 
 AC_SUBST(LUA)
 AC_SUBST(LUA_INCLUDES)
@@ -52,20 +60,16 @@ if test "x$LUA" = x; then
 fi
 
 dnl lua_version
-AC_MSG_CHECKING([for Lua version >= 5.0])
+AC_MSG_CHECKING([for Lua version >= 5.1])
 lua_version=$($LUA -v 2>&1 | head -n 1 | cut -d' ' -f2)
 case $lua_version in
-5.0*)
-    AC_MSG_RESULT([yes (found $lua_version)])
-    lualibdir='${libdir}/lua/50'
-    ;;
 5.1*)
     AC_MSG_RESULT([yes (found $lua_version)])
     lualibdir='${libdir}/lua/5.1'
     ;;
 *)
     AC_MSG_RESULT([no (found $lua_version)])
-    AC_MSG_FAILURE([*** Can't build without Lua])
+    AC_MSG_FAILURE([*** Can't build without Lua 5.1 or higher])
     ;;
 esac
 AC_SUBST(lualibdir)
@@ -114,8 +118,7 @@ int main()
 
 ]])],
               [AC_MSG_RESULT([yes])],
-              [AC_MSG_RESULT([no])])
-
+              [AC_MSG_ERROR([no])])
 
 dnl Generate output files.
 AC_CONFIG_FILES(Makefile)
