@@ -19,7 +19,7 @@ while n > 0 do
   n = bit.lshift (n, 1)
   maxbits = maxbits + 1
 end
-print ("maxbits " .. maxbits)
+print ("maxbits " .. maxbits .. "\n")
 
 assert (bit.band (0, 0) == 0)
 assert (bit.band (0, -1) == 0)
@@ -44,6 +44,7 @@ assert (bit.rshift (-1, 0) == -1)
 
 for nb = 1, maxbits do
   local a = 2 ^ nb - 1
+  print ("a = " .. a .. "\n")
   assert (bit.band (a, 0)  == 0)
   assert (bit.band (a, 1)  == 1)
   assert (bit.band (a, -1) == bit.cast (a))
