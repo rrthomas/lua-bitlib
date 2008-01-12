@@ -16,7 +16,7 @@ require "bit"
 local maxbits = 1
 local n = 1
 while n > 0 do
-  n = bit.lshift (n, 1)
+  n = bit.lshift (n, 1) + 1
   maxbits = maxbits + 1
 end
 print ("maxbits " .. maxbits .. "\n")
