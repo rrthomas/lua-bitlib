@@ -12,14 +12,27 @@ package.cpath = (os.getenv ("LD_LIBRARY_PATH") or ".") .. "/?.so"
 
 require "bit"
 
+
 -- Calculate number of bits in a bitfield
-local maxbits = 1
-local n = 1
-while n > 0 do
-  n = bit.lshift (n, 1) + 1
-  maxbits = maxbits + 1
-end
-print ("maxbits " .. maxbits .. "\n")
+local intbits = 0
+local n = bit.cast (-1)
+repeat
+  n = bit.rshift (n, 1)
+  intbits = intbits + 1
+until n == 0
+print ("int bits " .. intbits)
+
+local floatbits = 0
+local f = 1
+repeat
+  f = f * 2
+  floatbits = floatbits + 1
+until f >= f + 1
+print ("float bits " .. floatbits)
+
+maxbits = math.min (intbits, floatbits)
+print ("maxbits " .. maxbits)
+
 
 assert (bit.band (0, 0) == 0)
 assert (bit.band (0, -1) == 0)
@@ -44,7 +57,7 @@ assert (bit.rshift (-1, 0) == -1)
 
 for nb = 1, maxbits do
   local a = 2 ^ nb - 1
-  print ("a = " .. a .. "\n")
+  print ("a = " .. a)
   assert (bit.band (a, 0)  == 0)
   assert (bit.band (a, 1)  == 1)
   assert (bit.band (a, -1) == bit.cast (a))
