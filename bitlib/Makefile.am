@@ -8,4 +8,4 @@ bit_la_LDFLAGS = -module
 EXTRA_DIST = test.lua
 
 check:
-	libtool --mode=execute -dlopen bit.la shake $(top_srcdir)/test.lua
+	LUA_INIT= libtool --mode=execute -dlopen bit.la shake $(top_srcdir)/test.lua

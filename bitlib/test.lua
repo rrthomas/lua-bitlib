@@ -85,6 +85,8 @@ for nb = 1, maxbits do
     assert (bit.rshift (a, nb) == 0)
   end
   assert (bit.rshift (a, nb - 1) == 1)
+
+  assert (bit.arshift (-1, 1) == -1)
 end
 
 print "All bitlib tests passed"

@@ -25,11 +25,11 @@
                ((f) < PTRDIFF_MIN ? ((f) += SIZE_MAX + 1) : (f))))
 #endif
 
-#define TDYADIC(name, op)                                 \
+#define TDYADIC(name, op, ty)                             \
   static int bit_ ## name(lua_State *L) {                 \
     lua_Number f;                                         \
     lua_Integer w = TOINTEGER(L, 1, f);                   \
-    lua_pushinteger(L, w op TOINTEGER(L, 2, f));          \
+    lua_pushinteger(L, (ty)w op TOINTEGER(L, 2, f));      \
     return 1;                                             \
   }
 
@@ -56,9 +56,9 @@ MONADIC(bnot,    ~)
 VARIADIC(band,   &=)
 VARIADIC(bor,    |=)
 VARIADIC(bxor,   ^=)
-TDYADIC(lshift,  <<)
-TDYADIC(rshift,  >>)
-TDYADIC(arshift, >>)
+TDYADIC(lshift,  <<, lua_Integer)
+TDYADIC(rshift,  >>, size_t)
+TDYADIC(arshift, >>, lua_Integer)
 
 static const struct luaL_reg bitlib[] = {
   {"cast",    bit_cast},
