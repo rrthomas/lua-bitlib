@@ -1,5 +1,5 @@
 -- bitlib test suite
--- (c) Reuben Thomas and Shmuel Zeigerman 2007
+-- (c) Reuben Thomas 2007-2008 and Shmuel Zeigerman 2007
 -- See README for license
 
 -- FIXME: These settings should really be in the callee, but shake
@@ -14,14 +14,6 @@ require "bit"
 
 
 -- Calculate number of bits in a bitfield
-local intbits = 0
-local n = bit.cast (-1)
-repeat
-  n = bit.rshift (n, 1)
-  intbits = intbits + 1
-until n == 0
-print ("int bits " .. intbits)
-
 local floatbits = 0
 local f = 1
 repeat
@@ -29,6 +21,21 @@ repeat
   floatbits = floatbits + 1
 until f >= f + 1
 print ("float bits " .. floatbits)
+
+-- If the integer precision is greater than the floating point
+-- precision, this test can go wrong; we catch that by stopping if we
+-- reach floatbits
+local intbits = 0
+local n = bit.cast (-1)
+repeat
+  n = bit.rshift (n, 1)
+  intbits = intbits + 1
+until n == 0 or intbits == floatbits
+local warning = ""
+if n ~= 0 then
+  warning = "at least "
+end
+print ("int bits " .. warning .. intbits)
 
 maxbits = math.min (intbits, floatbits)
 print ("maxbits " .. maxbits)
