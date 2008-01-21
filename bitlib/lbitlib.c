@@ -20,9 +20,9 @@
 #include <math.h>
 
 #define TOINTEGER(L, n, f)                                              \
-  ((ptrdiff_t)(((f) = fmod(luaL_checknumber((L), (n)), (double)SIZE_MAX)), \
-               (f) > PTRDIFF_MAX ? ((f) -= SIZE_MAX + 1) :              \
-               ((f) < PTRDIFF_MIN ? ((f) += SIZE_MAX + 1) : (f))))
+  ((ptrdiff_t)(((f) = fmod(luaL_checknumber((L), (n)), (double)SIZE_MAX + 1.0)), \
+               (f) > PTRDIFF_MAX ? ((f) -= (double)SIZE_MAX + 1) :      \
+               ((f) < PTRDIFF_MIN ? ((f) += (double)SIZE_MAX + 1) : (f))))
 #endif
 
 #define TDYADIC(name, op, ty)                             \
