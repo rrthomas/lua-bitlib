@@ -47,7 +47,9 @@ Use
 
 Make sure the library is installed on your LUA_CPATH, and require it.
 
-Lua functions provided:
+The library provides the constant bit.bits that gives the number of
+bits that can be used in bitwise operations, and the following
+functions:
 
 bit.cast(a)        cast a to the internally-used integer type
 bit.bnot(a)        returns the one's complement of a

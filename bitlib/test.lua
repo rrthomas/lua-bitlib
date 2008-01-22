@@ -4,41 +4,12 @@
 
 -- FIXME: These settings should really be in the callee, but shake
 -- doesn't support that.
-
 -- FIXME: Setting of package.cpath only works because LD_LIBRARY_PATH
 -- contains only a single directory in this case
 package.path = ""
 package.cpath = (os.getenv ("LD_LIBRARY_PATH") or ".") .. "/?.so"
 
 require "bit"
-
-
--- Calculate number of bits in a bitfield
-local floatbits = 0
-local f = 1
-repeat
-  f = f * 2
-  floatbits = floatbits + 1
-until f >= f + 1
-print ("float bits " .. floatbits)
-
--- If the integer precision is greater than the floating point
--- precision, this test can go wrong; we catch that by stopping if we
--- reach floatbits
-local intbits = 0
-local n = bit.cast (-1)
-repeat
-  n = bit.rshift (n, 1)
-  intbits = intbits + 1
-until n == 0 or intbits == floatbits
-local warning = ""
-if n ~= 0 then
-  warning = "at least "
-end
-print ("int bits " .. warning .. intbits)
-
-maxbits = math.min (intbits, floatbits)
-print ("maxbits " .. maxbits)
 
 
 assert (bit.band (0, 0) == 0)
@@ -62,7 +33,7 @@ assert (bit.lshift (-1, 0) == -1)
 assert (bit.rshift (0, 0) == 0)
 assert (bit.rshift (-1, 0) == -1)
 
-for nb = 1, maxbits do
+for nb = 1, bit.bits do
   local a = 2 ^ nb - 1
   print ("a = " .. a)
   assert (bit.band (a, 0)  == 0)
@@ -82,8 +53,8 @@ for nb = 1, maxbits do
 
   assert (bit.bnot (a) == bit.cast (-1 - a))
 
-  assert (bit.lshift (a, 1) == bit.cast (a + a))
   if nb < maxbits then
+    assert (bit.lshift (a, 1) == bit.cast (a + a))
     assert (bit.lshift (1, nb) == bit.cast (2 ^ nb))
   end
 

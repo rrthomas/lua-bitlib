@@ -6,23 +6,43 @@
 
 #include <lua.h>
 #include <lauxlib.h>
+#include <limits.h>
 
+
+#define BIT_BITS                                                        \
+  (CHAR_BIT * sizeof(lua_Integer) > BITLIB_FLOAT_BITS ?                 \
+   BITLIB_FLOAT_BITS : (CHAR_BIT * sizeof(lua_Integer)))
+
+
+#ifdef BUILTIN_CAST
 /* FIXME: Should really use limits of lua_Integer (currently not given
    by Lua); the code below assumes that lua_Integer is ptrdiff_t, that
-   size_t is the same as unsigned ptrdiff_t, and that lua_Number is
-   floating-point and fits in a double (use of fmod). */
-#ifdef BUILTIN_CAST
+   size_t is the same as unsigned ptrdiff_t, that lua_Integer fits in
+   a long (constants) and that lua_Number is floating-point and fits
+   in a double (use of fmod). */
 #define TOINTEGER(L, n, f)                      \
-  ((void)(f),                                   \
-   luaL_checkinteger((L), (n)))
+  ((void)(f), luaL_checkinteger((L), (n)))
 #else
 #include <stdint.h>
 #include <math.h>
+#include "bit_limits.h"
+
+/* This code may give warnings if BITLIB_FLOAT_* are too big to fit in
+   long, but that doesn't matter since in that case they won't be
+   used. */
+#define BIT_MAX                                                         \
+  (CHAR_BIT * sizeof(lua_Integer) > BITLIB_FLOAT_BITS ? BITLIB_FLOAT_MAX : PTRDIFF_MAX)
+
+#define BIT_MIN                                                         \
+  (CHAR_BIT * sizeof(lua_Integer) > BITLIB_FLOAT_BITS ? BITLIB_FLOAT_MIN : PTRDIFF_MIN)
+
+#define BIT_UMAX                                                        \
+  (CHAR_BIT * sizeof(lua_Integer) > BITLIB_FLOAT_BITS ? BITLIB_FLOAT_UMAX : SIZE_MAX)
 
 #define TOINTEGER(L, n, f)                                              \
-  ((ptrdiff_t)(((f) = fmod(luaL_checknumber((L), (n)), (double)SIZE_MAX + 1.0)), \
-               (f) > PTRDIFF_MAX ? ((f) -= (double)SIZE_MAX + 1) :      \
-               ((f) < PTRDIFF_MIN ? ((f) += (double)SIZE_MAX + 1) : (f))))
+  ((ptrdiff_t)(((f) = fmod(luaL_checknumber((L), (n)), (double)BIT_UMAX + 1.0)), \
+               (f) > BIT_MAX ? ((f) -= (double)BIT_UMAX + 1) :          \
+               ((f) < BIT_MIN ? ((f) += (double)BIT_UMAX + 1) : (f))))
 #endif
 
 #define TDYADIC(name, op, ty)                             \
@@ -73,6 +93,8 @@ static const struct luaL_reg bitlib[] = {
 };
 
 LUALIB_API int luaopen_bit (lua_State *L) {
-  luaL_openlib(L, "bit", bitlib, 0);
+  luaL_register(L, "bit", bitlib);
+  lua_pushnumber(L, BIT_BITS);
+  lua_setfield(L, -2, "bits");
   return 1;
 }

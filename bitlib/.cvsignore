@@ -20,3 +20,4 @@ libtool
 ltmain.sh
 missing
 bitlib*.tar.gz
+bit_limits.h
