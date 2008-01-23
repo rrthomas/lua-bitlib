@@ -53,13 +53,13 @@ for nb = 1, bit.bits do
 
   assert (bit.bnot (a) == bit.cast (-1 - a))
 
-  if nb < maxbits then
+  if nb < bit.bits then
     assert (bit.lshift (a, 1) == bit.cast (a + a))
     assert (bit.lshift (1, nb) == bit.cast (2 ^ nb))
   end
 
   assert (bit.rshift (a, 1) == math.floor (a / 2))
-  if nb < maxbits then
+  if nb < bit.bits then
     assert (bit.rshift (a, nb) == 0)
   end
   assert (bit.rshift (a, nb - 1) == 1)
