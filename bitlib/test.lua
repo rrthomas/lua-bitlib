@@ -35,7 +35,7 @@ assert (bit.rshift (-1, 0) == -1)
 
 for nb = 1, bit.bits do
   local a = 2 ^ nb - 1
-  print ("a = " .. a)
+  print ("nb = " .. nb .. ", a = " .. a)
   assert (bit.band (a, 0)  == 0)
   assert (bit.band (a, 1)  == 1)
   assert (bit.band (a, -1) == bit.cast (a))
