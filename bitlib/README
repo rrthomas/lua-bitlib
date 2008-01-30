@@ -26,6 +26,9 @@ As normal:
 
     ./configure && make [&& make check] [&& make install]
 
+If you get warnings about integer constants being too large, don't
+worry. They won't be used.
+
 The following options may be of interest if you have Lua installed on
 non-default paths (as you are likely to on any system supporting more
 than one version of Lua):
