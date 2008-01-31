@@ -2,8 +2,6 @@
 /* (c) Reuben Thomas 2000-2008 */
 /* See README for license */
 
-#include "config.h"
-
 #include <lua.h>
 #include <lauxlib.h>
 #include <limits.h>

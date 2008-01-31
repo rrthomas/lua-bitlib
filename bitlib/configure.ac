@@ -8,9 +8,6 @@ AC_PROG_CC
 AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
-dnl create a config.h file (Automake will add -DHAVE_CONFIG_H)
-AM_CONFIG_HEADER(config.h)
-
 dnl Extra CFLAGS if we have gcc
 if test "$GCC" = yes; then
     CFLAGS="$CFLAGS -Wall -W -Wmissing-prototypes -Wstrict-prototypes -pedantic"
