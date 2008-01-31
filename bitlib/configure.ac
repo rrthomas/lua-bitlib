@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(bitlib, 25, rrt@sc3d.org)
+AC_INIT(bitlib, 26, rrt@sc3d.org)
 AM_INIT_AUTOMAKE
 
 dnl Check for programs
@@ -15,7 +15,6 @@ fi
 
 dnl Check for header files
 AC_HEADER_STDC
-AC_CHECK_HEADERS(fcntl.h unistd.h byteswap.h)
 
 dnl Whether to use builtin float to int cast (OK e.g. on i386)
 AC_SUBST(BUILTIN_CAST)
