@@ -15,8 +15,8 @@ use the LuaForge trackers.
 
 Thanks to John Passaniti for his bitwise operations library, some of
 whose ideas I used, to Shmuel Zeigerman for the test suite, to
-Thatcher Ulrich for portability fixes, and to Enrico Tassi and John
-Stiles for bug reports.
+Thatcher Ulrich for portability fixes, and to Enrico Tassi, John
+Stiles and Eduardo Ochs for bug reports.
 
 
 Installation
@@ -37,12 +37,12 @@ than one version of Lua):
   --with-lua-prefix=DIR   Lua files are in DIR
   --with-lua-includes=DIR Lua include files are in DIR
   --with-lua-libraries=DIR
-                          Lua library files are in DIR
+                          Lua library files are in DIR, or "no" if not used
   --with-lua-suffix=ARG   Lua binary and library files are suffixed with ARG
 
-For example, on Debian:
+For example, on Debian or Ubuntu:
 
-  ./configure --libdir=/usr/local/lib/lua/5.1 --with-lua-includes=/usr/include/lua5.1 --with-lua-suffix=5.1
+  ./configure --libdir=/usr/local/lib/lua/5.1 --with-lua-includes=/usr/include/lua5.1 --with-lua-suffix=5.1 --with-lua-libraries=no
 
 
 Use
