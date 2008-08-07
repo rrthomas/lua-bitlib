@@ -1,4 +1,4 @@
-dnl Process this file with autoconf to produce a configure script.
+dnl Process this file with autoconf to produce a configure script
 
 AC_INIT(bitlib, 26, rrt@sc3d.org)
 AM_INIT_AUTOMAKE
@@ -34,7 +34,7 @@ AC_ARG_WITH([lua-includes],
                             [Lua include files are in DIR])])
 AC_ARG_WITH([lua-libraries],
             [AS_HELP_STRING([--with-lua-libraries=DIR],
-                            [Lua library files are in DIR])])
+                            [Lua library files are in DIR, or "no" if not used])])
 AC_ARG_WITH([lua-suffix],
             [AS_HELP_STRING([--with-lua-suffix=ARG],
                             [Lua binary and library files are suffixed with
@@ -79,43 +79,50 @@ fi
 CPPFLAGS="$CPPFLAGS $LUA_INCLUDES"
 AC_CHECK_HEADERS([lua.h lualib.h], [],
                  [AC_MSG_FAILURE([*** missing headers lua.h or lualib.h.
-                  *** install the Lua dev package or check --with-lua-includes option.])], [])
+                  *** install the Lua dev package or check --with-lua-* option.])], [])
 
-dnl LUA_LIBS
-if test "x$with_lua_libraries" != x; then
-    LUA_LIBS="-L$with_lua_libraries"
-elif test "x$with_lua_prefix" != x; then
-    LUA_LIBS="-L$with_lua_prefix/lib"
+dnl Lua libraries
+if test "x$with_lua_libraries" != xno; then
+
+    dnl LUA_LIBS
+    if test "x$with_lua_libraries" != x; then
+        LUA_LIBS="-L$with_lua_libraries"
+    elif test "x$with_lua_prefix" != x; then
+        LUA_LIBS="-L$with_lua_prefix/lib"
+    fi
+    AC_CHECK_LIB([m], [exp], [lua_extra_libs="$lua_extra_libs -lm"], [])
+    AC_CHECK_LIB([dl], [dlopen], [lua_extra_libs="$lua_extra_libs -ldl"], [])
+    AC_CHECK_LIB([lua$with_lua_suffix],
+                 [lua_call],
+                 [LUA_LIBS="$LUA_LIBS -llua$with_lua_suffix $lua_extra_libs"],
+                 [AC_MSG_WARN([*** Can't find lua_call in -llua$with_lua_suffix.
+                      *** Assuming liblua is not needed; if it is desired, check
+                      *** --with-lua-* options.])],
+                 [$LUA_LIBS $lua_extra_libs])
+
+    dnl liblua_version
+    AC_MSG_CHECKING([for liblua version >= 5.1])
+    CFLAGS="$CFLAGS $LUA_INCLUDES"
+    LIBS="$LIBS $LUA_LIBS"
+    AC_RUN_IFELSE([AC_LANG_SOURCE([[
+    #include <lua.h>
+    #include <stdlib.h>
+    #include <stdio.h>
+    int main()
+    {
+        printf("(found %s, %d)... ", LUA_VERSION, LUA_VERSION_NUM);
+        if (LUA_VERSION_NUM >= 501)
+            exit(EXIT_SUCCESS);
+        exit(EXIT_FAILURE);
+    }
+    
+    ]])],
+                  [AC_MSG_RESULT([yes])],
+                  [AC_MSG_ERROR([no])])
+    
+dnl (End of checks for Lua libraries)
 fi
-AC_CHECK_LIB([m], [exp], [lua_extra_libs="$lua_extra_libs -lm"], [])
-AC_CHECK_LIB([dl], [dlopen], [lua_extra_libs="$lua_extra_libs -ldl"], [])
-AC_CHECK_LIB([lua$with_lua_suffix],
-             [lua_call],
-             [LUA_LIBS="$LUA_LIBS -llua$with_lua_suffix $lua_extra_libs"],
-             [AC_MSG_FAILURE([*** Can't find lua_call in lua$with_lua_suffix.
-                  *** Check for liblua installation or --with-lua-libraries or --with-lua-suffix options])],
-             [$LUA_LIBS $lua_extra_libs])
 
-dnl liblua_version
-AC_MSG_CHECKING([for liblua version >= 5.1])
-CFLAGS="$CFLAGS $LUA_INCLUDES"
-LIBS="$LIBS $LUA_LIBS"
-AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include <lua.h>
-#include <stdlib.h>
-#include <stdio.h>
-int main()
-{
-    printf("(found %s, %d)... ", LUA_VERSION, LUA_VERSION_NUM);
-    if (LUA_VERSION_NUM >= 501)
-        exit(EXIT_SUCCESS);
-    exit(EXIT_FAILURE);
-}
-
-]])],
-              [AC_MSG_RESULT([yes])],
-              [AC_MSG_ERROR([no])])
-
-dnl Generate output files.
+dnl Generate output files
 AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
