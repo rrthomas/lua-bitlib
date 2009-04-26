@@ -1,5 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
+ACLOCAL_AMFLAGS = -I m4
+
+AM_CPPFLAGS = $(LUA_INCLUDE)
+LDADD = $(LUA_LIB)
+
 lualib_LTLIBRARIES = bit.la
 
 bit_la_SOURCES = lbitlib.c bit_limits.h
