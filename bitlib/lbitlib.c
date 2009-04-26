@@ -9,11 +9,11 @@
 #include "bit_limits.h"
 
 
-/* FIXME: Assume lua_Integer is ptrdiff_t */
+/* FIXME: Assumes lua_Integer is ptrdiff_t */
 #define LUA_INTEGER_MAX PTRDIFF_MAX
 #define LUA_INTEGER_MIN PTRDIFF_MIN
 
-/* FIXME: Assume size_t is an unsigned lua_Integer */
+/* FIXME: Assumes size_t is an unsigned lua_Integer */
 typedef size_t lua_UInteger;
 #define LUA_UINTEGER_MAX SIZE_MAX
 
@@ -39,14 +39,14 @@ typedef size_t lua_UInteger;
 
 /* Define TOBIT to get a bit value */
 #ifdef BUILTIN_CAST
-#define 
+#define
 #define TOBIT(L, n, res)                    \
   ((void)(res), luaL_checkinteger((L), (n)))
 #else
 #include <stdint.h>
 #include <math.h>
 
-/* FIXME: Assume lua_Number fits in a double (use of fmod). */
+/* FIXME: Assumes lua_Number fits in a double (use of fmod). */
 #define TOBIT(L, n, res)                                            \
   ((lua_Integer)(((res) = fmod(luaL_checknumber(L, (n)), (double)BIT_UMAX + 1.0)), \
                  (res) > BIT_MAX ? ((res) -= (double)BIT_UMAX, (res) -= 1) : \
@@ -69,7 +69,7 @@ typedef size_t lua_UInteger;
    ARITHMETIC_SHIFT does not truncate its left-hand operand, so that
    the sign bits are not removed and right shift work properly.
    */
-  
+
 #define MONADIC(name, op)                                       \
   static int bit_ ## name(lua_State *L) {                       \
     lua_Number f;                                               \
