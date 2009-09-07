@@ -24,5 +24,5 @@ check-local:
 
 release: distcheck
 	cvs diff && \
-	cvs tag rel-${REL} && \
-	woger lua-l bitlib bitlib "release ${REL}" "library for bitwise operations" release-notes-${REL}
+	cvs tag rel-$(VERSION) && \
+	woger lua-l bitlib bitlib "release $(VERSION)" "library for bitwise operations" release-notes-$(VERSION)
