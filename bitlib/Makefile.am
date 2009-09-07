@@ -21,3 +21,8 @@ bit_limits.h: find_limits.lua
 
 check-local:
 	LUA_INIT= libtool --mode=execute -dlopen bit.la shake $(top_srcdir)/test.lua
+
+release: distcheck
+	cvs diff && \
+	cvs tag rel-${REL} && \
+	woger lua-l bitlib bitlib "release ${REL}" "library for bitwise operations" release-notes-${REL}
