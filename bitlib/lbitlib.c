@@ -39,7 +39,6 @@ typedef size_t lua_UInteger;
 
 /* Define TOBIT to get a bit value */
 #ifdef BUILTIN_CAST
-#define
 #define TOBIT(L, n, res)                    \
   ((void)(res), luaL_checkinteger((L), (n)))
 #else
