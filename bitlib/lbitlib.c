@@ -1,5 +1,5 @@
 /* Bitwise operations library */
-/* (c) Reuben Thomas 2000-2008 */
+/* (c) Reuben Thomas 2000-2010 */
 /* See README for license */
 
 #include <lua.h>
